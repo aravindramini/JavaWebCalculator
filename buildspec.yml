@@ -1,0 +1,27 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws --version
+	  -  aws ecr get-login-password --region us-west-1 | docker login --username AWS --password-stdin 164566612831.dkr.ecr.us-west-1.amazonaws.com
+      
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo building the war file
+      - mvn clean install
+      - echo Building the Docker image...
+      - docker build -t 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest
+      - docker tag 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker images...
+      - docker push 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest
+      #docker push 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest
+      - echo Writing image definitions file...
+      - printf '[{"name":"java-app-container","imageUri":164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest"}]' 164566612831.dkr.ecr.us-west-1.amazonaws.com/javawebcalc:latest > imagedefinitions.json
+      - cat imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
