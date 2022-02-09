@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: aravindraminijavawebcalculator 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aravindraminijavawebcalculator
+  template:
+    metadata:
+      labels:
+        app: aravindraminijavawebcalculator 
+    spec:
+      containers:
+        - name: aravindraminijavawebcalculator 
+          image: javaapp.azurecr.io/aravindraminijavawebcalculator
+          ports:
+          - containerPort: 80
